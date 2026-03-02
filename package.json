@@ -19,7 +19,7 @@
     }
   },
   "bin": {
-    "sor-reader": "./dist/cli.js"
+    "sor-reader": "dist/cli.js"
   },
   "files": [
     "dist",
@@ -28,6 +28,7 @@
   ],
   "scripts": {
     "build": "tsup",
+    "postbuild": "chmod +x dist/cli.js",
     "dev": "tsup --watch",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -51,7 +52,7 @@
     "binary",
     "typescript"
   ],
-  "author": "",
+  "author": "Ismael Vega <ismaelgrive@gmail.com>",
   "license": "MIT",
   "engines": {
     "node": ">=18"
