@@ -20,6 +20,7 @@ export type {
   BlockInfo,
   MapBlockInfo,
   ParseOptions,
+  VendorBlock,
 } from "./index.js";
 
 export * from "./errors.js";

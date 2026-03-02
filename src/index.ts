@@ -19,7 +19,7 @@ import { parseFxdParams, FxdParamsRaw } from "./fxdparams.js";
 import { parseKeyEvents, KeyEventsRaw } from "./keyevents.js";
 import { parseDataPts, DataPtsRaw, traceToString } from "./datapts.js";
 import { parseCksum, CksumRaw } from "./cksumblock.js";
-import { TracePoint, BlockInfo, MapBlockInfo } from "./types.js";
+import { TracePoint, BlockInfo, MapBlockInfo, VendorBlock } from "./types.js";
 import { ParseOptions } from "./types.js";
 
 export * from "./types.js";
@@ -43,6 +43,12 @@ export interface SorResult {
   DataPts: DataPtsRaw;
   Cksum: CksumRaw;
   trace: TracePoint[];
+  /**
+   * Vendor/unknown blocks encountered during parsing.
+   * If a `vendorParsers` option was provided for a block name, the parsed
+   * value is stored; otherwise a raw `VendorBlock` with bytes is stored.
+   */
+  vendorBlocks: Record<string, unknown>;
 }
 
 // ── Core parser ───────────────────────────────────────────────────────────────
@@ -61,7 +67,7 @@ export interface SorResult {
 export function parseSor(
   data: Uint8Array,
   filename = "",
-  _options: ParseOptions = {},
+  options: ParseOptions = {},
 ): SorResult {
   const reader = new BinaryReader(data);
   const { format, version, mapBlock, blocks } = parseMapBlock(reader);
@@ -77,6 +83,7 @@ export function parseSor(
   let dataPtsInfo: DataPtsRaw | undefined;
   let trace: TracePoint[] = [];
   let cksum: CksumRaw | undefined;
+  const vendorBlocks: Record<string, unknown> = {};
 
   for (const blk of ordered) {
     const name = blk.name;
@@ -106,11 +113,22 @@ export function parseSor(
       case "Cksum":
         cksum = parseCksum(reader, blocks, format);
         break;
-      default:
-        // Vendor/unknown block: read all bytes to keep CRC valid
+      default: {
+        // Vendor/unknown block: read all bytes to keep CRC valid, then
+        // optionally parse via the vendorParsers registry.
         reader.seek(blk.pos);
-        reader.skip(blk.size);
+        const rawBytes = reader.read(blk.size);
+        const vendorBlock: VendorBlock = {
+          name: blk.name,
+          version: blk.version,
+          bytes: rawBytes,
+        };
+        const customParser = options.vendorParsers?.[name];
+        vendorBlocks[name] = customParser
+          ? (customParser(vendorBlock, format) ?? vendorBlock)
+          : vendorBlock;
         break;
+      }
     }
   }
 
@@ -135,6 +153,7 @@ export function parseSor(
     DataPts: dataPtsInfo,
     Cksum: cksum,
     trace,
+    vendorBlocks,
   };
 }
 

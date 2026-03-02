@@ -15,7 +15,7 @@
 import { BinaryReader } from "./reader.js";
 import { BlockInfo } from "./types.js";
 import { SOL, UNIT_MAP, TRACE_TYPE_MAP } from "./constants.js";
-import { InvalidBlockError, MissingBlockError, UnsupportedFeatureError } from "./errors.js";
+import { InvalidBlockError, MissingBlockError } from "./errors.js";
 
 const BLOCK_NAME = "FxdParams";
 
@@ -129,14 +129,13 @@ export function parseFxdParams(
   // ── number of pulse width entries: uint16 ────────────────────────────
   const numPwEntries = reader.getUint(2);
   result["number of pulse width entries"] = numPwEntries;
-  if (numPwEntries > 1) {
-    throw new UnsupportedFeatureError(
-      `Multiple pulse width entries (${numPwEntries}) are not supported`,
-    );
-  }
 
-  // ── pulse width: uint16 ns ────────────────────────────────────────────
-  const pulseWidthRaw = reader.getUint(2);
+  // Mirrors pyOTDR: read all pulse widths; result keeps the last value
+  // (Multi-PW files contain one PW per pulse width entry; spacing/ndp follow)
+  let pulseWidthRaw = 0;
+  for (let i = 0; i < numPwEntries; i++) {
+    pulseWidthRaw = reader.getUint(2);
+  }
   result["pulse width"] = `${pulseWidthRaw.toFixed(0)} ns`;
 
   // ── sample spacing: uint32 × 1e-8 usec ──────────────────────────────

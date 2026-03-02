@@ -209,7 +209,30 @@ export interface SorData {
   trace: TracePoint[];
 }
 
+// ── Vendor block ──────────────────────────────────────────────────────────────
+
+/**
+ * Raw bytes and metadata for an unrecognised (vendor-specific) block.
+ * Bytes are always fully read so the CRC accumulator stays correct.
+ */
+export interface VendorBlock {
+  name: string;
+  version: string;
+  /** Raw block bytes (including the block-name header for v2, if present) */
+  bytes: Uint8Array;
+}
+
 // ── Parse options ─────────────────────────────────────────────────────────────
+
+/**
+ * Called for every unrecognised block before falling back to the default
+ * slurp behaviour. Return a parsed value (any type) to store it in
+ * `SorResult.vendorBlocks`, or `undefined` to use the default raw bytes.
+ */
+export type VendorBlockParser = (
+  block: VendorBlock,
+  format: 1 | 2,
+) => unknown;
 
 export interface ParseOptions {
   /**
@@ -223,4 +246,10 @@ export interface ParseOptions {
    * Set to 0.1 automatically for Noyes/AFL OFL250 OTDR model.
    */
   xScaling?: number;
+  /**
+   * Registry of custom parsers for vendor-specific blocks.
+   * Keys are block names (e.g. "HPEvent", "WaveMap").
+   * If a parser returns `undefined`, the raw VendorBlock is stored instead.
+   */
+  vendorParsers?: Record<string, VendorBlockParser>;
 }
