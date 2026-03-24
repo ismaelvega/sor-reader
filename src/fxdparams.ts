@@ -19,47 +19,6 @@ import { InvalidBlockError, MissingBlockError } from "./errors.js";
 
 const BLOCK_NAME = "FxdParams";
 
-/**
- * Raw output that mirrors the exact keys and value formats of pyOTDR's
- * FxdParams dictionary, for byte-identical JSON output.
- */
-export interface FxdParamsRaw {
-  "date/time": string;
-  unit: string;
-  wavelength: string;
-  "acquisition offset": number;
-  /** v2 only */
-  "acquisition offset distance"?: number;
-  "number of pulse width entries": number;
-  "pulse width": string;
-  "sample spacing": string;
-  "num data points": number;
-  index: string;
-  BC: string;
-  "num averages": number;
-  /** v2 only: "15 sec" */
-  "averaging time"?: string;
-  range: number;
-  /** v2 only */
-  "acquisition range distance"?: number;
-  "front panel offset": number;
-  "noise floor level": number;
-  "noise floor scaling factor": number;
-  "power offset first point": number;
-  "loss thr": string;
-  "refl thr": string;
-  "EOT thr": string;
-  /** v2 only: e.g. "ST[standard trace]" */
-  "trace type"?: string;
-  /** v2 only */
-  X1?: number;
-  Y1?: number;
-  X2?: number;
-  Y2?: number;
-  // Computed fields
-  resolution: number;
-}
-
 /** Format a UTC timestamp to match Python's strftime("%a %b %d %H:%M:%S %Y") */
 function formatDateTime(unixSec: number): string {
   const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

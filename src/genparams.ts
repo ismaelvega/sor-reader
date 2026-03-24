@@ -9,29 +9,11 @@
  */
 
 import { BinaryReader } from "./reader.js";
-import { BlockInfo } from "./types.js";
+import { BlockInfo, GenParamsRaw } from "./types.js";
 import { decodeBuildCondition, decodeFiberType } from "./constants.js";
 import { InvalidBlockError, MissingBlockError } from "./errors.js";
 
 const BLOCK_NAME = "GenParams";
-
-export interface GenParamsRaw {
-  language: string;
-  "cable ID": string;
-  "fiber ID": string;
-  /** v2 only */
-  "fiber type"?: string;
-  wavelength: string;
-  "location A": string;
-  "location B": string;
-  "cable code/fiber type": string;
-  "build condition": string;
-  "user offset": string;
-  /** v2 only */
-  "user offset distance"?: string;
-  operator: string;
-  comments: string;
-}
 
 export function parseGenParams(
   reader: BinaryReader,

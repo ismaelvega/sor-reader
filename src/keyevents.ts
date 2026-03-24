@@ -14,42 +14,11 @@
  */
 
 import { BinaryReader } from "./reader.js";
-import { BlockInfo } from "./types.js";
+import { BlockInfo, FxdParamsRaw, KeyEventRaw, KeyEventsRaw } from "./types.js";
 import { SOL } from "./constants.js";
 import { InvalidBlockError, MissingBlockError } from "./errors.js";
-import { FxdParamsRaw } from "./fxdparams.js";
 
 const BLOCK_NAME = "KeyEvents";
-
-export interface KeyEventRaw {
-  type: string;
-  distance: string;
-  slope: string;
-  "splice loss": string;
-  "refl loss": string;
-  comments: string;
-  // v2 only:
-  "end of prev"?: string;
-  "start of curr"?: string;
-  "end of curr"?: string;
-  "start of next"?: string;
-  peak?: string;
-}
-
-export interface KeyEventsSummaryRaw {
-  "total loss": number;
-  ORL: number;
-  "loss start": number;
-  "loss end": number;
-  "ORL start": number;
-  "ORL finish": number;
-}
-
-export interface KeyEventsRaw {
-  "num events": number;
-  [key: string]: KeyEventRaw | KeyEventsSummaryRaw | number;
-  Summary: KeyEventsSummaryRaw;
-}
 
 /**
  * Decode the 8-char event type string.

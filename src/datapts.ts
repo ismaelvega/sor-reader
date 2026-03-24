@@ -11,30 +11,10 @@
  */
 
 import { BinaryReader } from "./reader.js";
-import { BlockInfo, TracePoint } from "./types.js";
+import { BlockInfo, DataPtsResult, FxdParamsRaw, SupParamsRaw, TracePoint } from "./types.js";
 import { InvalidBlockError, MissingBlockError, UnsupportedFeatureError } from "./errors.js";
-import { FxdParamsRaw } from "./fxdparams.js";
-import { SupParamsRaw } from "./supparams.js";
 
 const BLOCK_NAME = "DataPts";
-
-export interface DataPtsRaw {
-  "num data points": number;
-  "num traces": number;
-  "num data points 2": number;
-  "scaling factor": number;
-  "max before offset": number;
-  "min before offset": number;
-  "_datapts_params": {
-    offset: "STV" | "AFL";
-    xscaling: number;
-  };
-}
-
-export interface DataPtsResult {
-  info: DataPtsRaw;
-  trace: TracePoint[];
-}
 
 export function parseDataPts(
   reader: BinaryReader,
