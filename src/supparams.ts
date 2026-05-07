@@ -8,20 +8,10 @@
  */
 
 import { BinaryReader } from "./reader.js";
-import { BlockInfo } from "./types.js";
+import { BlockInfo, SupParamsRaw } from "./types.js";
 import { InvalidBlockError, MissingBlockError } from "./errors.js";
 
 const BLOCK_NAME = "SupParams";
-
-export interface SupParamsRaw {
-  supplier: string;
-  OTDR: string;
-  "OTDR S/N": string;
-  module: string;
-  "module S/N": string;
-  software: string;
-  other: string;
-}
 
 export function parseSupParams(
   reader: BinaryReader,

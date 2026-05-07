@@ -12,16 +12,10 @@
  */
 
 import { BinaryReader } from "./reader.js";
-import { BlockInfo } from "./types.js";
+import { BlockInfo, CksumRaw } from "./types.js";
 import { InvalidBlockError, MissingBlockError } from "./errors.js";
 
 const BLOCK_NAME = "Cksum";
-
-export interface CksumRaw {
-  checksum: number;
-  checksum_ours: number;
-  match: boolean;
-}
 
 export function parseCksum(
   reader: BinaryReader,

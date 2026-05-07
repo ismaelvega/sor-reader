@@ -13,13 +13,13 @@
 
 import { BinaryReader } from "./reader.js";
 import { parseMapBlock } from "./mapblock.js";
-import { parseGenParams, GenParamsRaw } from "./genparams.js";
-import { parseSupParams, SupParamsRaw } from "./supparams.js";
-import { parseFxdParams, FxdParamsRaw } from "./fxdparams.js";
-import { parseKeyEvents, KeyEventsRaw } from "./keyevents.js";
-import { parseDataPts, DataPtsRaw, traceToString } from "./datapts.js";
-import { parseCksum, CksumRaw } from "./cksumblock.js";
-import { TracePoint, BlockInfo, MapBlockInfo, VendorBlock } from "./types.js";
+import { parseGenParams } from "./genparams.js";
+import { parseSupParams } from "./supparams.js";
+import { parseFxdParams } from "./fxdparams.js";
+import { parseKeyEvents } from "./keyevents.js";
+import { parseDataPts } from "./datapts.js";
+import { parseCksum } from "./cksumblock.js";
+import { TracePoint, BlockInfo, MapBlockInfo, VendorBlock, GenParamsRaw, SupParamsRaw, FxdParamsRaw, KeyEventsRaw, DataPtsRaw, CksumRaw } from "./types.js";
 import { ParseOptions } from "./types.js";
 
 export * from "./types.js";

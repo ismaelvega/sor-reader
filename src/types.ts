@@ -18,158 +18,116 @@ export interface MapBlockInfo {
   nblocks: number;
 }
 
-// ── GenParams ─────────────────────────────────────────────────────────────────
-
-export interface GenParamsV1 {
+export interface GenParamsRaw {
   language: string;
-  /** "cable ID" */
-  cableId: string;
-  /** "fiber ID" */
-  fiberId: string;
-  /** e.g. "1310 nm" */
+  "cable ID": string;
+  "fiber ID": string;
+  /** v2 only */
+  "fiber type"?: string;
   wavelength: string;
-  /** "location A" */
-  locationA: string;
-  /** "location B" */
-  locationB: string;
-  /** "cable code/fiber type" */
-  cableCode: string;
-  /** "build condition", e.g. "CC (as-current)" */
-  buildCondition: string;
-  /** "user offset" (signed int32 as string) */
-  userOffset: string;
+  "location A": string;
+  "location B": string;
+  "cable code/fiber type": string;
+  "build condition": string;
+  "user offset": string;
+  /** v2 only */
+  "user offset distance"?: string;
   operator: string;
   comments: string;
 }
 
-export interface GenParamsV2 extends GenParamsV1 {
-  /** "fiber type", e.g. "G.652 (standard SMF)" — v2 only */
-  fiberType: string;
-  /** "user offset distance" (signed int32 as string) — v2 only */
-  userOffsetDistance: string;
-}
-
-export type GenParams = GenParamsV1 | GenParamsV2;
-
-// ── SupParams ─────────────────────────────────────────────────────────────────
-
-export interface SupParams {
+export interface SupParamsRaw {
   supplier: string;
-  /** OTDR model name */
-  otdr: string;
-  /** "OTDR S/N" */
-  otdrSerialNumber: string;
-  /** module name */
+  OTDR: string;
+  "OTDR S/N": string;
   module: string;
-  /** "module S/N" */
-  moduleSerialNumber: string;
+  "module S/N": string;
   software: string;
   other: string;
 }
 
-// ── FxdParams ─────────────────────────────────────────────────────────────────
-
-export interface FxdParamsV1 {
-  /** ISO date string representation */
-  dateTime: string;
-  /** Raw Unix timestamp in seconds */
-  dateTimeRaw: number;
-  /** e.g. "mt (meters)" */
+/**
+ * Raw output that mirrors the exact keys and value formats of pyOTDR's
+ * FxdParams dictionary, for byte-identical JSON output.
+ */
+export interface FxdParamsRaw {
+  "date/time": string;
   unit: string;
-  /** e.g. "1310.0 nm" */
   wavelength: string;
-  acquisitionOffset: number;
-  pulseWidthEntries: number;
-  /** e.g. "1000 ns" */
-  pulseWidth: string;
-  /** sample spacing in microseconds */
-  sampleSpacing: number;
-  numDataPoints: number;
-  /** index of refraction, e.g. 1.471100 */
-  indexOfRefraction: number;
-  /** backscattering coefficient, e.g. "-81.50 dB" */
-  backscatterCoeff: string;
-  numAverages: number;
-  /** computed range in km */
+  "acquisition offset": number;
+  /** v2 only */
+  "acquisition offset distance"?: number;
+  "number of pulse width entries": number;
+  "pulse width": string;
+  "sample spacing": string;
+  "num data points": number;
+  index: string;
+  BC: string;
+  "num averages": number;
+  /** v2 only: "15 sec" */
+  "averaging time"?: string;
   range: number;
-  /** computed resolution in meters per sample */
+  /** v2 only */
+  "acquisition range distance"?: number;
+  "front panel offset": number;
+  "noise floor level": number;
+  "noise floor scaling factor": number;
+  "power offset first point": number;
+  "loss thr": string;
+  "refl thr": string;
+  "EOT thr": string;
+  /** v2 only: e.g. "ST[standard trace]" */
+  "trace type"?: string;
+  /** v2 only */
+  X1?: number;
+  Y1?: number;
+  X2?: number;
+  Y2?: number;
+  // Computed fields
   resolution: number;
-  frontPanelOffset: number;
-  noiseFloorLevel: number;
-  noiseFloorScalingFactor: number;
-  powerOffsetFirstPoint: number;
-  /** e.g. "0.000 dB" */
-  lossThreshold: string;
-  /** e.g. "-0.000 dB" */
-  reflThreshold: string;
-  /** e.g. "5.000 dB" */
-  eotThreshold: string;
 }
 
-export interface FxdParamsV2 extends FxdParamsV1 {
-  acquisitionOffsetDistance: number;
-  /** e.g. "15 sec" — v2 only */
-  averagingTime: string;
-  acquisitionRangeDistance: number;
-  /** e.g. "ST[standard trace]" — v2 only */
-  traceType: string;
-  x1: number;
-  y1: number;
-  x2: number;
-  y2: number;
-}
-
-export type FxdParams = FxdParamsV1 | FxdParamsV2;
-
-// ── KeyEvents ─────────────────────────────────────────────────────────────────
-
-export interface KeyEventV1 {
-  /** e.g. "1F9999LS {auto} reflection" */
+export interface KeyEventRaw {
   type: string;
-  /** distance in km as 3-decimal string (matches pyOTDR format) */
   distance: string;
-  /** dB/km as 3-decimal string */
   slope: string;
-  /** dB as 3-decimal string */
-  spliceLoss: string;
-  /** dB as 3-decimal string */
-  reflLoss: string;
+  "splice loss": string;
+  "refl loss": string;
   comments: string;
+  // v2 only:
+  "end of prev"?: string;
+  "start of curr"?: string;
+  "end of curr"?: string;
+  "start of next"?: string;
+  peak?: string;
 }
 
-export interface KeyEventV2 extends KeyEventV1 {
-  endOfPrev: string;
-  startOfCurr: string;
-  endOfCurr: string;
-  startOfNext: string;
-  peak: string;
+export interface KeyEventsSummaryRaw {
+  "total loss": number;
+  ORL: number;
+  "loss start": number;
+  "loss end": number;
+  "ORL start": number;
+  "ORL finish": number;
 }
 
-export type KeyEvent = KeyEventV1 | KeyEventV2;
-
-export interface KeyEventsSummary {
-  totalLoss: number;
-  orl: number;
-  lossStart: number;
-  lossEnd: number;
-  orlStart: number;
-  orlFinish: number;
+export interface KeyEventsRaw {
+  "num events": number;
+  [key: string]: KeyEventRaw | KeyEventsSummaryRaw | number;
+  Summary: KeyEventsSummaryRaw;
 }
 
-export interface KeyEvents {
-  numEvents: number;
-  events: KeyEvent[];
-  summary: KeyEventsSummary;
-}
-
-// ── DataPts ───────────────────────────────────────────────────────────────────
-
-export interface DataPtsInfo {
-  numDataPoints: number;
-  numTraces: number;
-  scalingFactor: number;
-  maxBeforeOffset: number;
-  minBeforeOffset: number;
+export interface DataPtsRaw {
+  "num data points": number;
+  "num traces": number;
+  "num data points 2": number;
+  "scaling factor": number;
+  "max before offset": number;
+  "min before offset": number;
+  "_datapts_params": {
+    offset: "STV" | "AFL";
+    xscaling: number;
+  };
 }
 
 export interface TracePoint {
@@ -177,6 +135,17 @@ export interface TracePoint {
   distance: number;
   /** power level in dB */
   power: number;
+}
+
+export interface DataPtsResult {
+  info: DataPtsRaw;
+  trace: TracePoint[];
+}
+
+export interface CksumRaw {
+  checksum: number;
+  checksum_ours: number;
+  match: boolean;
 }
 
 // ── Checksum ──────────────────────────────────────────────────────────────────
@@ -188,25 +157,6 @@ export interface ChecksumInfo {
   calculated: number;
   /** true if stored === calculated */
   valid: boolean;
-}
-
-// ── Top-level result ──────────────────────────────────────────────────────────
-
-export interface SorData {
-  filename: string;
-  /** 1 = Bellcore 1.x, 2 = Bellcore 2.x */
-  format: 1 | 2;
-  /** e.g. "1.00" or "2.00" */
-  version: string;
-  mapBlock: MapBlockInfo;
-  blocks: Record<string, BlockInfo>;
-  genParams: GenParams;
-  supParams: SupParams;
-  fxdParams: FxdParams;
-  keyEvents: KeyEvents;
-  dataPts: DataPtsInfo;
-  checksum: ChecksumInfo;
-  trace: TracePoint[];
 }
 
 // ── Vendor block ──────────────────────────────────────────────────────────────

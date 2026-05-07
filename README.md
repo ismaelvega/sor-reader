@@ -13,7 +13,7 @@ Works in **Node.js ≥ 18** and modern **browsers** (via Uint8Array — no Buffe
 - CRC16-CCITT checksum verification
 - Trace data export as tab-separated `.dat` (identical to pyOTDR output)
 - JSON output matching [pyOTDR](https://github.com/sid5432/pyOTDR) (sorted keys, 8-space indent)
-- Browser-safe entry point (`sor-reader/browser`) — no Node.js APIs in the core
+- Browser-safe entry point (`sor-reader`) — no Node.js APIs in the core
 - CLI tool for quick file processing
 - Full TypeScript types and JSDoc
 
@@ -52,7 +52,7 @@ writeFileSync("measurement-trace.dat", traceToString(result.trace));
 ### Browser / Bundler
 
 ```typescript
-import { parseSor, toJSON, traceToString } from "sor-reader/browser";
+import { parseSor, toJSON, traceToString } from "sor-reader";
 
 // From a file input or fetch response
 const response = await fetch("measurement.sor");
@@ -184,7 +184,7 @@ interface SorResult {
 |---|---|
 | Node.js ≥ 18 | Full (including `parseSorFile`) |
 | Node.js 16 | Core `parseSor` only (no `parseArgs` for CLI) |
-| Browsers (modern) | `sor-reader/browser` entry — all features except `parseSorFile` |
+| Browsers (modern) | `sor-reader` entry — all features except `parseSorFile` |
 | Deno | Use `parseSor` with `Uint8Array` from `Deno.readFile` |
 | Bun | Full support |
 
